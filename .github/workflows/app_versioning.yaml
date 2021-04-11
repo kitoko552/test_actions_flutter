@@ -19,7 +19,7 @@ jobs:
         if: github.event.inputs.appVersion != ''
         run: perl -i -pe 's/^(version:\s)\d+\.\d+\.\d+\+(\d+)$/$1."${{ github.event.inputs.appVersion }}+".($2+1)/e' pubspec.yaml
       - name: Save app version to a variable
-        run: APP_VERSION=`awk '/version:/{print $NF}' pubspec.yaml`
+        run: echo "APP_VERSION=`awk '/version:/{print $NF}' pubspec.yaml`" >> $GITHUB_ENV
       - name: Add & Commit
         uses: EndBug/add-and-commit@v7.1.1
         with:
