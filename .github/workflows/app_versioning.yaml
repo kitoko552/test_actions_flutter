@@ -14,10 +14,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Update app version and increment build number
         if: github.event.inputs.appVersion == ''
-        run: perl -i -pe 's/^version:\s(\d+\.\d+\.\d+\+)(\d+)$/"version: ".$1.($2+1)/e' pubspec.yaml
+        run: perl -i -pe 's/^(version:\s\d+\.\d+\.\d+\+)(\d+)$/$1.($2+1)/e' pubspec.yaml
       - name: Increment build number
         if: github.event.inputs.appVersion != ''
-        run: perl -i -pe 's/^version:\s\d+\.\d+\.\d+\+(\d+)$/"version: ${{ github.event.inputs.appVersion }}+".($1+1)/e' pubspec.yaml
+        run: perl -i -pe 's/^(version:\s)\d+\.\d+\.\d+\+(\d+)$/$1."${{ github.event.inputs.appVersion }}+".($2+1)/e' pubspec.yaml
       - name: Add & Commit
         uses: EndBug/add-and-commit@v7.1.1
         with:
@@ -30,7 +30,7 @@ jobs:
           # The directory where your repository is located. You should use actions/checkout first to set it up
           # cwd: # optional, default is .
           # The message for the commit
-          message: chore(*): Update app version
+          message: 'chore(*): Update app version'
           # The flag used on the pull strategy. Use NO-PULL to avoid the action pulling at all.
           # pull_strategy: # optional, default is --no-rebase
           # Whether to push the commit and, if any, its tags to the repo. It can also be used to set the git push arguments (more info in the README)
