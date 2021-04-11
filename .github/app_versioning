@@ -1,0 +1,43 @@
+name: Test app versioning
+
+on:
+  workflow_dispatch:
+    inputs:
+      appVersion:
+        description: 'app version'
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Update app version and increment build number
+        if: github.event.inputs.appVersion == ''
+        run: perl -i -pe 's/^version:\s(\d+\.\d+\.\d+\+)(\d+)$/"version: ".$1.($2+1)/e' pubspec.yaml
+      - name: Increment build number
+        if: github.event.inputs.appVersion != ''
+        run: perl -i -pe 's/^version:\s\d+\.\d+\.\d+\+(\d+)$/"version: ${{ github.event.inputs.appVersion }}+".($1+1)/e' pubspec.yaml
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@v7.1.1
+        with:
+          # The name of the user that will be displayed as the author of the commit
+          # author_name: # optional, default is ${{ github.actor }}
+          # The email of the user that will be displayed as the author of the commit
+          # author_email: # optional, default is ${{ github.actor }}@users.noreply.github.com
+          # Name of the branch to use, if different from the one that triggered the workflow
+          # branch: # optional
+          # The directory where your repository is located. You should use actions/checkout first to set it up
+          # cwd: # optional, default is .
+          # The message for the commit
+          message: chore(*): Update app version
+          # The flag used on the pull strategy. Use NO-PULL to avoid the action pulling at all.
+          # pull_strategy: # optional, default is --no-rebase
+          # Whether to push the commit and, if any, its tags to the repo. It can also be used to set the git push arguments (more info in the README)
+          # push: # optional, default is true
+          # Arguments for the git rm command
+          # remove: # optional
+          # Whether to use the --signoff option on git commit
+          # signoff: # optional
+          # Arguments for the git tag command (the tag name always needs to be the first word not preceded by a hyphen)
+          # tag: # optional
